@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNP Paribas Luxembourg</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        body {
+            background-color: #FFFFFF;
+        }
+        header {
+            background-color: #005566; /* Vert BNP Paribas */
+            color: white;
+            padding: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        header img {
+            max-width: 120px;
+        }
+        header h1 {
+            font-size: 1.8em;
+            font-weight: 400;
+        }
+        nav {
+            background-color: #003087; /* Bleu institutionnel */
+            padding: 1em;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 1.5em;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #E6F0FA;
+        }
+        .hero {
+            background: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2') no-repeat center center/cover;
+            color: white;
+            padding: 4em 2em;
+            text-align: center;
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 85, 102, 0.7); /* Overlay vert foncé */
+        }
+        .hero h2, .hero p, .hero button {
+            position: relative;
+            z-index: 1;
+        }
+        .hero h2 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 0.5em;
+        }
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 1em;
+        }
+        .hero button {
+            background-color: #003087;
+            color: white;
+            padding: 0.8em 2em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .hero button:hover {
+            background-color: #005566;
+        }
+        .section {
+            max-width: 1200px;
+            margin: 2em auto;
+            padding: 2em;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .section h2 {
+            color: #003087;
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5em;
+        }
+        .card {
+            background-color: #E6F0FA;
+            padding: 1.5em;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 1em;
+        }
+        .card h4 {
+            color: #003087;
+            font-weight: 700;
+            margin-bottom: 0.5em;
+        }
+        .card a {
+            color: #005566;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .card a:hover {
+            text-decoration: underline;
+        }
+        .login-container, .simulator-container, .retirement-container, .contact-container {
+            max-width: 400px;
+            margin: 2em auto;
+            padding: 2em;
+        }
+        .login-container label, .simulator-container label, .retirement-container label, .contact-container label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            color: #003087;
+        }
+        .login-container input, .simulator-container input, .retirement-container input, .contact-container input, .contact-container textarea {
+            width: 100%;
+            padding: 0.8em;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .login-container button, .simulator-container button, .retirement-container button, .contact-container button {
+            width: 100%;
+            padding: 0.8em;
+            background-color: #005566;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        .login-container button:hover, .simulator-container button:hover, .retirement-container button:hover, .contact-container button:hover {
+            background-color: #003087;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        th, td {
+            padding: 1em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #E6F0FA;
+            color: #003087;
+            font-weight: 700;
+        }
+        canvas {
+            max-width: 100%;
+            margin-top: 1em;
+        }
+        footer {
+            background-color: #005566;
+            color: white;
+            text-align: center;
+            padding: 2em;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #E6F0FA;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            header img {
+                margin-bottom: 0.5em;
+            }
+            nav a {
+                margin: 0 0.5em;
+                font-size: 0.9em;
+            }
+            .hero h2 {
+                font-size: 1.8em;
+            }
+            .hero p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://via.placeholder.com/120x60/005566/ffffff?text=BNP+Paribas" alt="BNP Paribas Luxembourg">
+        <h1>BNP Paribas Luxembourg</h1>
+    </header>
+    <nav>
+        <a href="#home">Accueil</a>
+        <a href="#login">Connexion</a>
+        <a href="#dashboard">Tableau de bord</a>
+        <a href="#simulator">Simulateur de crédit</a>
+        <a href="#retirement">Simulateur de retraite</a>
+        <a href="#documents">Documents</a>
+        <a href="#contact">Contact</a>
+        <a href="#legal">Mentions légales</a>
+    </nav>
+
+    <!-- Page d'accueil -->
+    <div id="home" class="hero">
+        <h2>Votre partenaire financier au Luxembourg</h2>
+        <p>BNP Paribas Luxembourg vous accompagne dans vos projets immobiliers, votre retraite et la gestion de votre patrimoine.</p>
+        <button onclick="window.location.href='#contact'">Prendre rendez-vous</button>
+    </div>
+    <div class="section">
+        <h2>Nos solutions pour vous</h2>
+        <div class="cards">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1556742049-887f6717d7f4" alt="Cartes bancaires" style="height: 150px; object-fit: cover;">
+                <h4>Cartes bancaires</h4>
+                <p>Découvrez notre gamme de cartes adaptées à vos besoins.</p>
+                <a href="#cards">En savoir plus</a>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2" alt="Prêt immobilier" style="height: 150px; object-fit: cover;">
+                <h4>Prêt immobilier</h4>
+                <p>Simulez votre emprunt pour votre projet au Luxembourg.</p>
+                <a href="#simulator">Simuler maintenant</a>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1519085360753-afbcb6ee7718" alt="Conseiller" style="height: 150px; object-fit: cover;">
+                <h4>Conseils d’experts</h4>
+                <p>Nos conseillers vous guident dans vos projets financiers.</p>
+                <a href="#contact">Contacter un conseiller</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page de connexion -->
+    <div id="login" class="section login-container">
+        <h2><i class="fas fa-lock"></i> Connexion sécurisée</h2>
+        <form id="login-form">
+            <label for="username">Identifiant</label>
+            <input type="text" id="username" placeholder="Votre identifiant" required>
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" placeholder="Votre mot de passe" required>
+            <button type="submit">Se connecter</button>
+        </form>
+        <p style="text-align: center; margin-top: 1em;">
+            <a href="#forgot" style="color: #003087;">Mot de passe oublié ?</a>
+        </p>
+    </div>
+
+    <!-- Tableau de bord -->
+    <div id="dashboard" class="section">
+        <h2>Votre tableau de bord</h2>
+        <p><strong>Solde de votre compte :</strong> 12 345,67 €</p>
+        <h3>Coordonnées bancaires</h3>
+        <p><strong>IBAN :</strong> LU28 0019 4006 4475 0000</p>
+        <p><strong>BIC :</strong> BNPLULLXXX</p>
+        <p><strong>Titulaire :</strong> BNP Paribas Luxembourg</p>
+        <p><strong>Agence :</strong> 1 Avenue de la Liberté, L-1930 Luxembourg</p>
+        <p><strong>IBAN (Compte personnel) :</strong> LU12 3456 7890 1234 5678</p>
+        <p><strong>BIC (Compte personnel) :</strong> BNPLULL001</p>
+        <p><strong>Titulaire (Compte personnel) :</strong> Gary Klein</p>
+        <h3>Historique des virements</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>20/07/2025</td>
+                    <td>Virement à Gary Klein</td>
+                    <td>-250,00 €</td>
+                    <td>Effectué</td>
+                </tr>
+                <tr>
+                    <td>15/07/2025</td>
+                    <td>Salaire de Gary Klein</td>
+                    <td>+3 500,00 €</td>
+                    <td>Effectué</td>
+                </tr>
+                <tr>
+                    <td>10/07/2025</td>
+                    <td>Paiement facture énergie (Gary Klein)</td>
+                    <td>-120,00 €</td>
+                    <td>Effectué</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Évolution du solde</h3>
+        ```chartjs
+        {
+            "type": "line",
+            "data": {
+                "labels": ["Jan 2025", "Fév 2025", "Mar 2025", "Avr 2025", "Mai 2025", "Juin 2025", "Juil 2025"],
+                "datasets": [{
+                    "label": "Solde (€)",
+                    "data": [10000, 10500, 11000, 10800, 11500, 12000, 12345.67],
+                    "borderColor": "#003087",
+                    "backgroundColor": "rgba(0, 85, 102, 0.2)",
+                    "fill": true,
+                    "tension": 0.4
+                }]
+            },
+            "options": {
+                "scales": {
+                    "y": {
+                        "beginAtZero": false,
+                        "title": {
+                            "display": true,
+                            "text": "Solde (€)",
+                            "color": "#003087",
+                            "font": {
+                                "weight": "bold"
+                            }
+                        }
+                    },
+                    "x": {
+                        "title": {
+                            "display": true,
+                            "text": "Mois",
+                            "color": "#003087",
+                            "font": {
+                                "weight": "bold"
+                            }
+                        }
+                    }
+                },
+                "plugins": {
+                    "legend": {
+                        "labels": {
+                            "color": "#003087"
+                        }
+                    }
+                }
+            }
+        }
